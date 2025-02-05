@@ -15,11 +15,11 @@ interface ContentCardProps {
 const ContentTypeIcon = ({ type }: { type: ContentType }) => {
   switch (type) {
     case 'youtube':
-      return <Youtube className="h-5 w-5 text-red-600" />;
+      return <Youtube className="h-5 w-5 text-gray-600" />;
     case 'twitter':
-      return <Twitter className="h-5 w-5 text-blue-400" />;
+      return <Twitter className="h-5 w-5 text-gray-600" />;
     case 'mixed':
-      return <Layout className="h-5 w-5 text-purple-500" />;
+      return <Layout className="h-5 w-5 text-gray-600" />;
     default:
       return <FileText className="h-5 w-5 text-gray-600" />;
   }
