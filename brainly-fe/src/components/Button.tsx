@@ -27,7 +27,7 @@ export function Button({
   className
 }: ButtonProps) {
   const baseClasses =
-    "flex items-center justify-center font-normal ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+    "flex items-center justify-center font-normal ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer";
 
   const fullWidthClass = fullWidth ? "w-full text-center" : "";
   const bgLightClass = bgLight
@@ -45,9 +45,10 @@ export function Button({
 
   const sizeClasses = {
     lg: "px-6 py-3 text-lg rounded-xl gap-2",
-    md: "px-4 py-2 text-sm rounded-lg gap-1.5",
-    sm: "px-3 py-1.5 text-xs rounded-md gap-1"
+    md: "px-5 py-2.5 text-base rounded-lg gap-2",
+    sm: "px-4 py-2 text-sm rounded-md gap-1.5"
   };
+  
 
   return (
     <button

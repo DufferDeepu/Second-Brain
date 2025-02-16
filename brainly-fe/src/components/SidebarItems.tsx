@@ -13,10 +13,10 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
   isActive = false,
   onClick,
 }) => {
-  return (
+  return ( 
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-6 py-3 transition-colors duration-200
+      className={`w-full flex items-center gap-3 px-6 py-3 transition-colors duration-200 cursor-pointer
         ${
           isActive
             ? 'bg-indigo-50 text-indigo-600'

@@ -1,10 +1,44 @@
+import React, { useState } from 'react';
 import { Button } from "../components/Button";
 import { PlusIcon } from "../icons/PlusIcon";
 import { ShareIcon } from "../icons/ShareIcon";
 import { ContentCard } from "../components/ContentCard";
 import { Sidebar } from "../components/SideBar";
+import { ContentModal } from "../components/ContentModal";
 
 export function Dashboard() {
+  type Content = {
+    title: string;
+    content: string;
+    type: "youtube" | "twitter" | "mixed";
+    dateAdded: string;
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [contents, setContents] = useState<Content[]>([
+    {
+      title: "YouTube Tutorial",
+      content: "https://www.youtube.com/watch?v=godVDNVWeso",
+      type: "youtube",
+      dateAdded: "Mar 15, 2024"
+    },
+    {
+      title: "Interesting Tweet",
+      content: "https://x.com/tweet/status/1465053672593784834",
+      type: "twitter",
+      dateAdded: "Mar 15, 2024"
+    },
+    {
+      title: "Morning Routine",
+      content: "Go to gym at 9, breakfast after",
+      type: "mixed",
+      dateAdded: "Mar 15, 2024"
+    }
+  ]);
+
+  const handleAddContent = (newContent: Content) => {
+    setContents([...contents, newContent]);
+  };
   return (
     <div className="flex min-h-screen">
       <Sidebar />
@@ -23,7 +57,9 @@ export function Dashboard() {
                 variant="secondary"
                 startIcon={<ShareIcon size="md" />}
                 size="md"
-                className="sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm"                label="Share Brain"
+                className="sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm" 
+                label="Share Brain"
+                fullWidth
               />
             </div>
             <div className="p-4">
@@ -31,34 +67,34 @@ export function Dashboard() {
                 variant="default"
                 startIcon={<PlusIcon size="md" />}
                 size="md"
-                className="sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm"                label="Add Content"
+                className="sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm" 
+                label="Add Content"
+                fullWidth
+                onClick={() => setIsModalOpen(true)}
               />
             </div>
           </div>
         </div>
-        <div className="flex gap-2 flex-wrap">
-          <ContentCard
-            title="hi there"
-            content=""
-            type="youtube"
-            dateAdded=""
-          />
-          <ContentCard
-            title="hi there"
-            content="https://x.com/tweet/status/1465053672593784834?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1465053672593784834%7Ctwgr%5Ec7475872bfcc63b65f97aa2db858a04ae5e5df5f%7Ctwcon%5Es1_c10&ref_url=https%3A%2F%2Fpublish.twitter.com%2F%3Furl%3Dhttps%3A%2F%2Ftwitter.com%2Ftweet%2Fstatus%2F1465053672593784834"
-            type="twitter"
-            dateAdded=""
-          />
-          <ContentCard
-            title="Go to gym"
-            content=" at 9 breakfast"
-            type="mixed"
-            dateAdded=""
-          />
-        </div>
+
+        {/* Content Cards Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {contents.map((content, index) => (
+              <ContentCard
+                key={index}
+                title={content.title}
+                content={content.content}
+                type={content.type}
+                dateAdded={content.dateAdded}
+              />
+            ))}
+          </div>
       </div>
+
+      <ContentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleAddContent}
+      />
     </div>
   );
 }
-
-
