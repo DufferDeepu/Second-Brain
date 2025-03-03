@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
 import { Lock, User } from 'lucide-react';
 import { Button } from '../components/Button';
+import { authAPI } from '../api'; // Import the API service
+import { useNavigate } from 'react-router-dom'; // Import for navigation
 
 export function Signin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate(); // Hook for navigation
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Sign in attempt:', { username, password });
+    setError('');
+    setIsLoading(true);
+    
+    try {
+      // Call the signin API
+      await authAPI.signin(username, password);
+      // If successful, navigate to dashboard
+      navigate('/dashboard');
+    } catch (err) {
+      // Show error message if login fails
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -19,7 +37,14 @@ export function Signin() {
           <p className="text-gray-500 mt-2">Please sign in to your account</p>
         </div>
 
+        {error && (
+          <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Username field (unchanged) */}
           <div className="space-y-2">
             <label htmlFor="username" className="block text-sm font-medium text-gray-700">
               Username
@@ -40,6 +65,7 @@ export function Signin() {
             </div>
           </div>
 
+          {/* Password field (unchanged) */}
           <div className="space-y-2">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
@@ -65,7 +91,7 @@ export function Signin() {
               <input
                 id="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                 Remember me
@@ -73,7 +99,7 @@ export function Signin() {
             </div>
             <button 
             type="button" 
-            className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+            className="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
               Forgot password?
             </button>
           </div>
@@ -82,13 +108,17 @@ export function Signin() {
             variant='default'
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
             fullWidth
-            label='Sign in' size={'md'}          >
-          </Button>
+            label={isLoading ? 'Signing in...' : 'Sign in'} 
+            size={'md'}
+            disabled={isLoading}
+          />
         </form>
 
         <div className="text-center text-sm">
           <span className="text-gray-500">Don't have an account?</span>{' '}
-          <button className="font-medium text-indigo-600 hover:text-indigo-500">
+          <button 
+            onClick={() => navigate('/signup')}
+            className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
             Sign up
           </button>
         </div>

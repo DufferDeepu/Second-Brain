@@ -1,25 +1,50 @@
+// Signup.tsx
 import React, { useState } from 'react';
 import { Lock, User } from 'lucide-react';
 import { Button } from '../components/Button';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import { authAPI } from '../api';
 
 export function Signup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const signupMutation = useMutation(
+    (credentials: { username: string; password: string }) =>
+      authAPI.signup(credentials.username, credentials.password),
+    {
+      onSuccess: () => {
+        // Navigate to signin after successful signup
+        navigate('/signin');
+      },
+      onError: (error: any) => {
+        setError(error?.response?.data?.message || 'Failed to sign up');
+      },
+    }
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log('Sign up attempt:', { username, password });
+    setError('');
+    signupMutation.mutate({ username, password });
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 space-y-6">
-      <div className="text-center">
-  <h1 className="text-3xl font-bold text-gray-900">Create an Account</h1>
-  <p className="text-gray-500 mt-2">Join us and get started with your new account</p>
-</div>
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900">Create an Account</h1>
+          <p className="text-gray-500 mt-2">Join us and get started with your new account</p>
+        </div>
 
+        {error && (
+          <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -62,34 +87,24 @@ export function Signup() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                Remember me
-              </label>
-            </div>
-          </div>
-
-             <Button
-                variant='default'
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
-                fullWidth
-                label='Sign up' size={'md'}                    >
-            </Button>
+          <Button
+            variant='default'
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+            fullWidth
+            label={signupMutation.isLoading ? 'Signing up...' : 'Sign up'} 
+            size={'md'}
+            disabled={signupMutation.isLoading}
+          />
         </form>
 
         <div className="text-center text-sm">
-            <span className="text-gray-500">Already have an account?</span>{' '}
-            <button className="font-medium text-indigo-600 hover:text-indigo-500">
-                Sign in
-            </button>
+          <span className="text-gray-500">Already have an account?</span>{' '}
+          <button 
+            onClick={() => navigate('/signin')}
+            className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
+            Sign in
+          </button>
         </div>
-
       </div>
     </div>
   );

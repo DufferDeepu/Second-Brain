@@ -101,11 +101,11 @@ app.get('/api/v1/content', userMiddleware, async (req, res) => {
     })
 })
 
-app.post('/delete', async (req, res) => {
+app.post('/api/v1/delete', userMiddleware, async (req, res) => {
     const contentId = req.body.contentId;
 
     await ContentModel.deleteMany({
-        contentId,
+        _id: contentId,
         userId: req.userId
     })
     res.json({
@@ -113,7 +113,7 @@ app.post('/delete', async (req, res) => {
     })
 })
 
-app.post('api/v1/brain/share', userMiddleware, async (req, res) => {
+app.post('/api/v1/brain/share', userMiddleware, async (req, res) => {
     const share = req.body.share;
     if (share) {
         const existingLink = await LinkModel.findOne({
@@ -135,15 +135,15 @@ app.post('api/v1/brain/share', userMiddleware, async (req, res) => {
         res.json({
             hash
         })
-} else {
-    await LinkModel.deleteOne({
-        userId: req.userId
-    });
+    } else {
+        await LinkModel.deleteOne({
+            userId: req.userId
+        });
 
-    res.json({
-        message: "Removed link"
-    })
-}
+        res.json({
+            message: "Removed link"
+        })
+    }
 })
 
 
@@ -185,10 +185,3 @@ app.get("/api/v1/brain/:shareLink", async (req, res) => {
 })
 
 app.listen(3000);
-
-
-// {
-//     "link": "http://example.com",
-//     "type": "video",
-//     "title": "Example Content"
-// }

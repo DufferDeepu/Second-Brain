@@ -1,6 +1,6 @@
 import mongoose, { model } from 'mongoose';
 
-mongoose.connect('mongodb+srv://kraftygifthouse:ZP8u97nNS06szvIg@cluster0.5kxko.mongodb.net/');
+mongoose.connect('mongodb+srv://kraftygifthouse:KzteZmwydM74E5kP@cluster0.5kxko.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
 
 const Schema = mongoose.Schema;
 

@@ -8,7 +8,7 @@ interface ContentModalProps {
   onSubmit: (content: {
     title: string;
     content: string;
-    type: "youtube" | "twitter" | "mixed";
+    type: "youtube" | "twitter" | "documents";
     dateAdded: string;
   }) => void;
 }
@@ -20,16 +20,16 @@ export const ContentModal: React.FC<ContentModalProps> = ({
 }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [contentType, setContentType] = useState<"youtube" | "twitter" | "mixed">("mixed");
+  const [contentType, setContentType] = useState<"youtube" | "twitter" | "documents">("documents");
 
   useEffect(() => {
-    // Auto-detect content type based on link
+    // Auto-detect content type based on input
     if (content.includes('youtube.com') || content.includes('youtu.be')) {
       setContentType('youtube');
     } else if (content.includes('twitter.com') || content.includes('x.com')) {
       setContentType('twitter');
     } else {
-      setContentType('mixed');
+      setContentType('documents');
     }
   }, [content]);
 
@@ -88,12 +88,11 @@ export const ContentModal: React.FC<ContentModalProps> = ({
             <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
               Content
             </label>
-            <input
+            <textarea
               id="content"
-              type="text"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-y min-h-[100px]"
               placeholder="Enter link or text content"
               required
             />
@@ -111,13 +110,13 @@ export const ContentModal: React.FC<ContentModalProps> = ({
               {contentType === 'twitter' && (
                 <>
                   <Twitter className="h-4 w-4 text-blue-400" />
-                  <span>Twitter</span>
+                  <span>Tweets</span>
                 </>
               )}
-              {contentType === 'mixed' && (
+              {contentType === 'documents' && (
                 <>
                   <FileText className="h-4 w-4 text-gray-600" />
-                  <span>Text/Mixed</span>
+                  <span>Documents</span>
                 </>
               )}
             </div>

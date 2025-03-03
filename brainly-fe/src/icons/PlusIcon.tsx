@@ -4,7 +4,7 @@ interface PlusIconProps {
   
   const sizeVariants = {
     sm: "size-2",
-    md: "size-5.5", // Changed from "size-5.5" to match ShareIcon's md size
+    md: "size-4.5", // Changed from "size-5.5" to match ShareIcon's md size
     lg: "size-6"
   };
   
@@ -14,13 +14,13 @@ interface PlusIconProps {
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
-        stroke-width="2"
+        strokeWidth="2"
         stroke="currentColor"
         className={sizeVariants[props.size || "sm"]}
       >
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           d="M12 4.5v15m7.5-7.5h-15"
         />
       </svg>
