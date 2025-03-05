@@ -17,7 +17,7 @@ interface ContentSubmission {
   dateAdded: string;
 }
 
-export function Dashboard() {
+export const Dashboard = () => {
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareContentId, setShareContentId] = useState<string | undefined>(undefined);
@@ -28,8 +28,8 @@ export function Dashboard() {
 
   // Fetch contents
   const { data: contents = [], isLoading } = useQuery<Content[]>(
-    ['contents', selectedType],
-    () => contentAPI.getContents(selectedType),
+    ['contents'],
+    () => contentAPI.getContents('All Notes'),
     {
       refetchOnWindowFocus: false,
     }
@@ -105,19 +105,36 @@ export function Dashboard() {
   }));
 
   // Filter contents based on selected type
-  const filteredContents = selectedType === 'All Notes' 
-    ? transformedContents 
-    : transformedContents.filter(content => content.type === selectedType);
+  const filteredContents = transformedContents.filter(content => {
+    if (selectedType === 'All Notes') return true;
+    
+    // Map sidebar item names to content types
+    const typeMapping: Record<string, string> = {
+      'Tweets': 'twitter',
+      'Videos': 'youtube',
+      'Documents': 'document',
+      'Links': 'link',
+      // For Tags, we would need additional implementation
+    };
+    
+    const contentTypeToFilter = typeMapping[selectedType] || selectedType.toLowerCase();
+    return content.type.toLowerCase() === contentTypeToFilter;
+  });
+
+  // Handler for sidebar item click
+  const handleSidebarItemClick = (type: string) => {
+    setSelectedType(type);
+  };
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar onItemClick={setSelectedType} activeItem={selectedType} />
+      <Sidebar onItemClick={handleSidebarItemClick} activeItem={selectedType} />
       
       {/* Main Content Area */}
       <div className="flex-1 p-4 bg-gray-100">
         <div className="flex justify-between items-center">
           <div className="font-bold text-2xl ml-2 hidden md:block">
-            {selectedType === 'All' ? 'All Notes' : `${selectedType}`}
+            {selectedType}
           </div>
           
           <div className="flex justify-end">
@@ -155,7 +172,7 @@ export function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredContents.length === 0 ? (
               <div className="col-span-full text-center py-10">
-                <p className="text-gray-500">No content found. Add some content to get started!</p>
+                <p className="text-gray-500">No {selectedType !== 'All Notes' ? selectedType : ''} content found. Add some content to get started!</p>
               </div>
             ) : (
               filteredContents.map((content, index) => (
@@ -163,7 +180,8 @@ export function Dashboard() {
                   key={content.id || index}
                   title={content.title}
                   content={content.content}
-                  type={content.type as "youtube" | "twitter" | "text" | "mixed"}
+                  //@ts-ignore
+                  type={content.type as "youtube" | "twitter" | "text" | "mixed" | "document" | "link"}
                   dateAdded={content.dateAdded}
                   onDelete={() => handleDelete(content.id)}
                   onShare={() => handleShareContent(content.id, content.title)}

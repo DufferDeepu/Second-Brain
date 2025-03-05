@@ -1,5 +1,5 @@
 // ShareModal.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Link, Copy, Check } from 'lucide-react';
 import { Button } from './Button';
 import { useMutation } from 'react-query';
@@ -12,12 +12,12 @@ interface ShareModalProps {
   contentTitle?: string;
 }
 
-export const ShareModal: React.FC<ShareModalProps> = ({ 
+export const ShareModal = ({ 
   isOpen, 
   onClose, 
   contentId, 
   contentTitle 
-}) => {
+}: ShareModalProps) => {
   const [copied, setCopied] = useState(false);
   const [shareLink, setShareLink] = useState('');
   

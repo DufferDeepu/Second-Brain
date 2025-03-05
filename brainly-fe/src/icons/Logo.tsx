@@ -1,8 +1,7 @@
 
-import React from 'react';
-import { BrainCog  } from 'lucide-react';
+import { BrainCog } from 'lucide-react';
 
-export const Logo: React.FC = () => {
+export const Logo = () => {
   return (
     <div className="flex items-center gap-2 px-6 py-4">
       <BrainCog  className="h-8 w-8 text-indigo-600" />

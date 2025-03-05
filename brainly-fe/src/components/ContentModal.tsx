@@ -13,11 +13,11 @@ interface ContentModalProps {
   }) => void;
 }
 
-export const ContentModal: React.FC<ContentModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmit
-}) => {
+export const ContentModal = ({ 
+  isOpen, 
+  onClose, 
+  onSubmit 
+}: ContentModalProps) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [contentType, setContentType] = useState<"youtube" | "twitter" | "documents">("documents");

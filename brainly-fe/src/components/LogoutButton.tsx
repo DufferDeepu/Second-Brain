@@ -1,5 +1,3 @@
-// LogoutButton.tsx
-import React from 'react';
 import { Button } from './Button';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +5,7 @@ interface LogoutButtonProps {
   className?: string;
 }
 
-export const LogoutButton: React.FC<LogoutButtonProps> = ({ className }) => {
+export const LogoutButton = ({ className }: LogoutButtonProps) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {

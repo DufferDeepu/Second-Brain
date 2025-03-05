@@ -1,4 +1,3 @@
-// App.tsx
 import "./App.css";
 import { Dashboard } from "./pages/Dashboard";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";

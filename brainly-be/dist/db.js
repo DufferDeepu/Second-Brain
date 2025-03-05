@@ -35,7 +35,11 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LinkModel = exports.ContentModel = exports.UserModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-mongoose_1.default.connect('mongodb+srv://kraftygifthouse:KzteZmwydM74E5kP@cluster0.5kxko.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+const config_1 = require("./config");
+mongoose_1.default
+    .connect(config_1.MONGO_URI)
+    .then(() => console.log("✅ Connected to MongoDB!"))
+    .catch((err) => console.error("❌ MongoDB connection error:", err));
 const Schema = mongoose_1.default.Schema;
 const UserSchema = new Schema({
     username: {

@@ -26,14 +26,14 @@ const ContentTypeIcon = ({ type }: { type: ContentType }) => {
 };
 
 // Content Card Component
-export const ContentCard: React.FC<ContentCardProps> = ({
+export const ContentCard = ({
   title,
   content,
   type,
   dateAdded,
   onShare,
-  onDelete
-}) => {
+  onDelete,
+}: ContentCardProps) => {
   return (
     <div className="p-4 bg-white rounded-lg border border-gray-200 flex flex-col w-full min-h-[200px]">
       <div className="flex justify-between items-center w-full mb-4">

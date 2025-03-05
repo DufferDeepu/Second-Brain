@@ -3,8 +3,9 @@ import { Lock, User } from 'lucide-react';
 import { Button } from '../components/Button';
 import { authAPI } from '../api'; // Import the API service
 import { useNavigate } from 'react-router-dom'; // Import for navigation
+import { Logo } from '../icons/Logo';
 
-export function Signin() {
+export const Signin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -33,7 +34,8 @@ export function Signin() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
+          <div className='justify-items-center'><Logo /></div>
+          <h1 className="text-3xl font-bold text-gray-900">Welcome Back !</h1>
           <p className="text-gray-500 mt-2">Please sign in to your account</p>
         </div>
 

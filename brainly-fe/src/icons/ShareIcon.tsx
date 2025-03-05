@@ -4,11 +4,11 @@ interface ShareIconProps {
   
   const sizeVariants = {
     sm: "size-2",
-    md: "size-4", // Changed from "size-4.5" to match PlusIcon's md size
+    md: "size-4",
     lg: "size-6"
   };
   
-  export function ShareIcon(props: ShareIconProps) {
+  export const ShareIcon = (props: ShareIconProps) => {
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"

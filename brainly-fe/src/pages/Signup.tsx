@@ -1,12 +1,12 @@
-// Signup.tsx
 import React, { useState } from 'react';
 import { Lock, User } from 'lucide-react';
 import { Button } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { authAPI } from '../api';
+import { Logo } from '../icons/Logo';
 
-export function Signup() {
+export const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -36,6 +36,7 @@ export function Signup() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 space-y-6">
         <div className="text-center">
+          <div className='justify-items-center'><Logo /></div>
           <h1 className="text-3xl font-bold text-gray-900">Create an Account</h1>
           <p className="text-gray-500 mt-2">Join us and get started with your new account</p>
         </div>

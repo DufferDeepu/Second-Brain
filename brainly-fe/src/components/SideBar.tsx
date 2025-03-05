@@ -1,17 +1,22 @@
-import React from 'react';
 import { Twitter, FileText, Tags, Youtube, Link2, BrainCog} from 'lucide-react';
 import { Logo } from '../icons/Logo';
 import { SidebarItem } from './SidebarItems';
 import { LogoutButton } from './LogoutButton';
 
-export const Sidebar: React.FC<{ onItemClick: (type: string) => void; activeItem: string }> = ({ onItemClick, activeItem }) => {
+
+interface SidebarProps {
+  onItemClick: (type: string) => void;
+  activeItem: string;
+}
+
+export const Sidebar = ({ onItemClick, activeItem }: SidebarProps) => {
   const menuItems = [
-    { id: 'All Notes', icon: BrainCog, label: 'All Notes' },
-    { id: 'Tweets', icon: Twitter, label: 'Tweets' },
-    { id: 'Videos', icon: Youtube, label: 'Videos' },
-    { id: 'Documents', icon: FileText, label: 'Documents' },
-    { id: 'Links', icon: Link2, label: 'Links' },
-    { id: 'Tags', icon: Tags, label: 'Tags' },
+    { id: "All Notes", icon: BrainCog, label: "All Notes" },
+    { id: "Tweets", icon: Twitter, label: "Tweets" },
+    { id: "Videos", icon: Youtube, label: "Videos" },
+    { id: "Documents", icon: FileText, label: "Documents" },
+    { id: "Links", icon: Link2, label: "Links" },
+    { id: "Tags", icon: Tags, label: "Tags" },
   ];
   
 

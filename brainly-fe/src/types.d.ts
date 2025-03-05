@@ -1,5 +1,3 @@
-// types/index.ts
-
 export interface Content {
   _id: string;
   title: string;

@@ -1,6 +1,11 @@
 import mongoose, { model } from 'mongoose';
 
-mongoose.connect('mongodb+srv://kraftygifthouse:KzteZmwydM74E5kP@cluster0.5kxko.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+import { MONGO_URI } from "./config";
+
+mongoose
+  .connect(MONGO_URI)
+  .then(() => console.log("✅ Connected to MongoDB!"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 const Schema = mongoose.Schema;
 
