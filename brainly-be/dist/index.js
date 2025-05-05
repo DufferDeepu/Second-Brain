@@ -20,14 +20,18 @@ const db_1 = require("./db");
 const config_1 = require("./config");
 const middleware_1 = require("./middleware");
 const utils_1 = require("./utils");
+// Create Express app
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+// Sign up endpoint
 app.post('/api/v1/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = req.body.username;
     const password = req.body.password;
     try {
+        // Hash password for security
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
+        // Create new user
         yield db_1.UserModel.create({
             username,
             password: hashedPassword
@@ -42,15 +46,19 @@ app.post('/api/v1/signup', (req, res) => __awaiter(void 0, void 0, void 0, funct
         });
     }
 }));
+// Sign in endpoint
 app.post('/api/v1/signin', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = req.body.username;
     const password = req.body.password;
+    // Find user by username
     const existingUser = yield db_1.UserModel.findOne({
         username
     });
     if (existingUser && existingUser.password) {
+        // Check if password is correct
         const isPasswordValid = yield bcrypt_1.default.compare(password, existingUser.password);
         if (isPasswordValid) {
+            // Create JWT token
             const token = jsonwebtoken_1.default.sign({
                 id: existingUser._id
             }, config_1.JWT_SECRET);
@@ -70,11 +78,13 @@ app.post('/api/v1/signin', (req, res) => __awaiter(void 0, void 0, void 0, funct
         });
     }
 }));
+// Add content endpoint
 app.post('/api/v1/content', middleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Received request body:", req.body);
     console.log("User ID from token:", req.userId);
     const { link, type, title } = req.body;
     try {
+        // Create new content
         yield db_1.ContentModel.create({
             link,
             type,
@@ -88,12 +98,14 @@ app.post('/api/v1/content', middleware_1.userMiddleware, (req, res) => __awaiter
     }
     catch (error) {
         res.status(500).json({
-            message: "Error adding content",
+            message: "Error adding content"
         });
     }
 }));
+// Get user content endpoint
 app.get('/api/v1/content', middleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
+    // Get all content for this user
     const content = yield db_1.ContentModel.find({
         userId
     }).populate("userId", "username");
@@ -101,8 +113,10 @@ app.get('/api/v1/content', middleware_1.userMiddleware, (req, res) => __awaiter(
         content
     });
 }));
+// Delete content endpoint
 app.post('/api/v1/delete', middleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const contentId = req.body.contentId;
+    // Delete content for this user
     yield db_1.ContentModel.deleteMany({
         _id: contentId,
         userId: req.userId
@@ -111,9 +125,11 @@ app.post('/api/v1/delete', middleware_1.userMiddleware, (req, res) => __awaiter(
         message: "Content deleted"
     });
 }));
+// Share brain endpoint
 app.post('/api/v1/brain/share', middleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const share = req.body.share;
     if (share) {
+        // Check if user already has a share link
         const existingLink = yield db_1.LinkModel.findOne({
             userId: req.userId
         });
@@ -123,7 +139,9 @@ app.post('/api/v1/brain/share', middleware_1.userMiddleware, (req, res) => __awa
             });
             return;
         }
+        // Generate new hash
         const hash = (0, utils_1.random)(10);
+        // Create new link
         yield db_1.LinkModel.create({
             userId: req.userId,
             hash: hash
@@ -133,6 +151,7 @@ app.post('/api/v1/brain/share', middleware_1.userMiddleware, (req, res) => __awa
         });
     }
     else {
+        // Remove share link
         yield db_1.LinkModel.deleteOne({
             userId: req.userId
         });
@@ -141,8 +160,10 @@ app.post('/api/v1/brain/share', middleware_1.userMiddleware, (req, res) => __awa
         });
     }
 }));
+// Get shared brain endpoint
 app.get("/api/v1/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const hash = req.params.shareLink;
+    // Find link by hash
     const link = yield db_1.LinkModel.findOne({
         hash
     });
@@ -152,11 +173,12 @@ app.get("/api/v1/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void
         });
         return;
     }
-    // userId
+    // Get all content for shared user
     const content = yield db_1.ContentModel.find({
         userId: link.userId
     });
     console.log(link);
+    // Get user info
     const user = yield db_1.UserModel.findOne({
         _id: link.userId
     });
@@ -171,4 +193,7 @@ app.get("/api/v1/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void
         content: content
     });
 }));
-app.listen(3000);
+// Start server
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});

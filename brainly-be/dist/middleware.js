@@ -6,22 +6,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userMiddleware = userMiddleware;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("./config");
+// Middleware to check if user is authenticated
 function userMiddleware(req, res, next) {
     try {
-        // Get the token from the Authorization header
+        // Get token from header
         const token = req.headers["authorization"];
-        // Check if the token is missing or is not a string
-        if (!token || typeof token !== "string") {
+        // Check if token exists
+        if (!token) {
             res.status(401).json({
-                message: "Token missing or invalid"
+                message: "Token missing"
             });
             return;
         }
-        // Remove the "Bearer " part of the token if present
-        const tokenWithoutBearer = token.startsWith("Bearer ") ? token.slice(7) : token;
-        // Verify the token using jwt.verify
-        const decoded = jsonwebtoken_1.default.verify(tokenWithoutBearer, config_1.JWT_SECRET);
+        // Remove "Bearer " prefix if present
+        let tokenValue = token;
+        if (typeof token === "string" && token.startsWith("Bearer ")) {
+            tokenValue = token.slice(7);
+        }
+        // Verify token
+        const decoded = jsonwebtoken_1.default.verify(tokenValue, config_1.JWT_SECRET);
         if (decoded && decoded.id) {
+            // Add userId to request object
             req.userId = decoded.id;
             next();
         }
@@ -29,11 +34,13 @@ function userMiddleware(req, res, next) {
             res.status(403).json({
                 message: "Unauthorized"
             });
+            return;
         }
     }
     catch (error) {
         res.status(403).json({
             message: "Unauthorized"
         });
+        return;
     }
 }

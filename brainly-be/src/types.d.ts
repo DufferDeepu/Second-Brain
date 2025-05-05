@@ -1,8 +1,6 @@
-export {};
-declare global {
-    namespace Express {
-      export interface Request {
-          userId?: string;
-      }
-    }
+// Add userId property to Express Request
+declare namespace Express {
+  interface Request {
+    userId?: string;
+  }
 }

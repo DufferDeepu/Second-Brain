@@ -1,49 +1,54 @@
-import mongoose, { model } from 'mongoose';
-
+import mongoose from 'mongoose';
 import { MONGO_URI } from "./config";
 
+// Connect to MongoDB
 mongoose
   .connect(MONGO_URI)
-  .then(() => console.log("✅ Connected to MongoDB!"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+  .then(() => console.log("Connected to MongoDB!"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
+// Create schemas
 const Schema = mongoose.Schema;
 
+// User schema
 const UserSchema = new Schema({
   username: { 
     type: String,
     unique: true
-    },
+  },
   password: {
     type: String
   }
 });
 
-export const UserModel = model("User", UserSchema);
-
+// Content schema
 const ContentSchema = new Schema({
-    title: String,
-    link: String,
-    tags: [{
-        type: mongoose.Types.ObjectId, ref: "Tag"
-    }],
-    type: String,
-    userId: {
-        type: mongoose.Types.ObjectId, ref: "User", 
-        required: true
-    }
+  title: String,
+  link: String,
+  tags: [{
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Tag"
+  }],
+  type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User", 
+    required: true
+  }
 });
 
-export const ContentModel = model("content", ContentSchema);
-
+// Link schema
 const LinkSchema = new Schema({
-    hash: String,
-    userId: {
-        type: mongoose.Types.ObjectId,
-        ref: "User",
-        required: true,
-        unique: true
-    }
+  hash: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+    unique: true
+  }
 });
 
-export const LinkModel = model("Links", LinkSchema);
+// Create and export models
+export const UserModel = mongoose.model("User", UserSchema);
+export const ContentModel = mongoose.model("content", ContentSchema);
+export const LinkModel = mongoose.model("Links", LinkSchema);

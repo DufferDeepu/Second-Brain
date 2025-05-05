@@ -1,38 +1,44 @@
-  // middleware.ts
-  import { NextFunction, Request, Response } from "express";
-  import jwt, { JwtPayload } from "jsonwebtoken";
-  import { JWT_SECRET } from "./config";
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "./config";
+
+// Middleware to check if user is authenticated
+export function userMiddleware(req: Request, res: Response, next: NextFunction): void {
+  try {
+    // Get token from header
+    const token = req.headers["authorization"];
   
-  export function userMiddleware(req: Request, res: Response, next: NextFunction): void {
-    try {
-      // Get the token from the Authorization header
-      const token = req.headers["authorization"];
+    // Check if token exists
+    if (!token) {
+      res.status(401).json({
+        message: "Token missing"
+      });
+      return;
+    }
   
-      // Check if the token is missing or is not a string
-      if (!token || typeof token !== "string") {
-        res.status(401).json({
-          message: "Token missing or invalid"
-        });
-        return;
-      }
+    // Remove "Bearer " prefix if present
+    let tokenValue = token;
+    if (typeof token === "string" && token.startsWith("Bearer ")) {
+      tokenValue = token.slice(7);
+    }
   
-      // Remove the "Bearer " part of the token if present
-      const tokenWithoutBearer = token.startsWith("Bearer ") ? token.slice(7) : token;
+    // Verify token
+    const decoded = jwt.verify(tokenValue as string, JWT_SECRET) as any;
   
-      // Verify the token using jwt.verify
-      const decoded = jwt.verify(tokenWithoutBearer, JWT_SECRET) as JwtPayload;
-  
-      if (decoded && decoded.id) {
-        req.userId = decoded.id;
-        next();
-      } else {
-        res.status(403).json({
-          message: "Unauthorized"
-        });
-      }
-    } catch (error) {
+    if (decoded && decoded.id) {
+      // Add userId to request object
+      req.userId = decoded.id;
+      next();
+    } else {
       res.status(403).json({
         message: "Unauthorized"
       });
+      return;
     }
+  } catch (error) {
+    res.status(403).json({
+      message: "Unauthorized"
+    });
+    return;
   }
+}
