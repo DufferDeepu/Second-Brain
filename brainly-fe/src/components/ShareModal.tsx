@@ -34,7 +34,7 @@ export const ShareModal = ({
   const shareMutation = useMutation(
     (share: boolean) => {
       return isContentShare 
-        ? sharingAPI.shareContent(contentId as string)
+        ? sharingAPI.shareContent() // Removed contentId parameter
         : sharingAPI.shareBrain(share);
     },
     {
