@@ -9,9 +9,10 @@ interface Content {
   _id: string;
   title: string;
   link: string;
-  type: string;
+  type: 'youtube' | 'twitter' | 'text' | 'document' | 'link'; // Added document and link types
   userId: string;
   tags: string[];
+  createdAt?: string; // Added missing property
 }
 
 interface ContentInput {
@@ -67,7 +68,7 @@ export const authAPI = {
 // Content API functions
 export const contentAPI = {
   // Get content list
-  getContents: async (type?: string): Promise<Content[]> => {
+  getContents: async (): Promise<Content[]> => { // Removed unused type parameter
     const response = await api.get<{ content: Content[] }>('/content');
     return response.data.content || [];
   },
@@ -94,7 +95,7 @@ export const sharingAPI = {
   },
   
   // Share content function
-  shareContent: async (contentId: string): Promise<ShareResponse> => {
+  shareContent: async (): Promise<ShareResponse> => { // Removed unused contentId parameter
     // Generate a shareable link for individual content
     const brainShareResponse = await api.post<ShareResponse>('/brain/share', { share: true });
     return brainShareResponse.data;

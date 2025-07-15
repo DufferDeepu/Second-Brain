@@ -29,7 +29,7 @@ export const Dashboard = () => {
   // Fetch contents
   const { data: contents = [], isLoading } = useQuery<Content[]>(
     ['contents'],
-    () => contentAPI.getContents('All Notes'),
+    () => contentAPI.getContents(), // Removed 'All Notes' parameter
     {
       refetchOnWindowFocus: false,
     }
@@ -92,20 +92,40 @@ export const Dashboard = () => {
   };
 
   // Transform API data to match ContentCard props
-  const transformedContents = contents.map((item) => ({
-    id: item._id,
-    title: item.title,
-    content: item.link,
-    type: item.type === 'text' ? 'mixed' : item.type,
-    dateAdded: new Date(item.createdAt || Date.now()).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    }),
-  }));
+  const transformedContents = contents.map((item: Content) => {
+    // Map API types to ContentCard accepted types
+    let cardType: "youtube" | "twitter" | "text" | "mixed";
+    
+    switch (item.type) {
+      case 'youtube':
+        cardType = 'youtube';
+        break;
+      case 'twitter':
+        cardType = 'twitter';
+        break;
+      case 'text':
+        cardType = 'mixed';
+        break;
+      default:
+        cardType = 'mixed'; // Default fallback for any other types
+        break;
+    }
+    
+    return {
+      id: item._id,
+      title: item.title,
+      content: item.link,
+      type: cardType,
+      dateAdded: new Date(item.createdAt || Date.now()).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }),
+    };
+  });
 
   // Filter contents based on selected type
-  const filteredContents = transformedContents.filter(content => {
+  const filteredContents = transformedContents.filter((content: any) => {
     if (selectedType === 'All Notes') return true;
     
     // Map sidebar item names to content types
@@ -175,13 +195,12 @@ export const Dashboard = () => {
                 <p className="text-gray-500">No {selectedType !== 'All Notes' ? selectedType : ''} content found. Add some content to get started!</p>
               </div>
             ) : (
-              filteredContents.map((content, index) => (
+              filteredContents.map((content: any, index: number) => (
                 <ContentCard
                   key={content.id || index}
                   title={content.title}
                   content={content.content}
-                  //@ts-ignore
-                  type={content.type as "youtube" | "twitter" | "text" | "mixed" | "document" | "link"}
+                  type={content.type}
                   dateAdded={content.dateAdded}
                   onDelete={() => handleDelete(content.id)}
                   onShare={() => handleShareContent(content.id, content.title)}
