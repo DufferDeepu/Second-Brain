@@ -12,6 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
 // Sign up endpoint
 app.post('/api/v1/signup', async (req, res) => {
   const username = req.body.username;
