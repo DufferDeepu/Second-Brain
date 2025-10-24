@@ -24,6 +24,7 @@ const utils_1 = require("./utils");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+const PORT = process.env.PORT || 3000;
 // Sign up endpoint
 app.post('/api/v1/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = req.body.username;
@@ -194,6 +195,6 @@ app.get("/api/v1/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void
     });
 }));
 // Start server
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log("Server running on port 3000");
 });
