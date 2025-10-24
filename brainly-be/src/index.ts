@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 
 // Sign up endpoint
-app.post('/api/v1/signup', async (req: Request, res: Response) => {
+app.post('/signup', async (req: Request, res: Response) => {
   const username = req.body.username;
   const password = req.body.password;
     
@@ -40,7 +40,7 @@ app.post('/api/v1/signup', async (req: Request, res: Response) => {
 });
 
 // Sign in endpoint
-app.post('/api/v1/signin', async (req: Request, res: Response) => {
+app.post('/signin', async (req: Request, res: Response) => {
   const username = req.body.username;
   const password = req.body.password;
 
@@ -75,7 +75,7 @@ app.post('/api/v1/signin', async (req: Request, res: Response) => {
 });
 
 // Add content endpoint
-app.post('/api/v1/content', userMiddleware, async (req: Request, res: Response) => {
+app.post('/content', userMiddleware, async (req: Request, res: Response) => {
   console.log("Received request body:", req.body);
   console.log("User ID from token:", req.userId);
   
@@ -102,7 +102,7 @@ app.post('/api/v1/content', userMiddleware, async (req: Request, res: Response) 
 });
 
 // Get user content endpoint
-app.get('/api/v1/content', userMiddleware, async (req: Request, res: Response) => {
+app.get('/content', userMiddleware, async (req: Request, res: Response) => {
   const userId = req.userId;
   
   // Get all content for this user
@@ -116,7 +116,7 @@ app.get('/api/v1/content', userMiddleware, async (req: Request, res: Response) =
 });
 
 // Delete content endpoint
-app.post('/api/v1/delete', userMiddleware, async (req: Request, res: Response) => {
+app.post('/delete', userMiddleware, async (req: Request, res: Response) => {
   const contentId = req.body.contentId;
 
   // Delete content for this user
@@ -131,7 +131,7 @@ app.post('/api/v1/delete', userMiddleware, async (req: Request, res: Response) =
 });
 
 // Share brain endpoint
-app.post('/api/v1/brain/share', userMiddleware, async (req: Request, res: Response) => {
+app.post('/brain/share', userMiddleware, async (req: Request, res: Response) => {
   const share = req.body.share;
   
   if (share) {
@@ -172,7 +172,7 @@ app.post('/api/v1/brain/share', userMiddleware, async (req: Request, res: Respon
 });
 
 // Get shared brain endpoint
-app.get("/api/v1/brain/:shareLink", async (req: Request, res: Response) => {
+app.get("/brain/:shareLink", async (req: Request, res: Response) => {
   const hash = req.params.shareLink;
 
   // Find link by hash
