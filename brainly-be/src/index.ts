@@ -11,6 +11,7 @@ import { random } from "./utils";
 const app = express();
 app.use(express.json());
 app.use(cors());
+const PORT = process.env.PORT || 3000;
 
 
 // Sign up endpoint
@@ -212,6 +213,6 @@ app.get("/api/v1/brain/:shareLink", async (req, res) => {
 });
 
 // Start server
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log("Server running on port 3000");
 });
