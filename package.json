@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "disable-react-devtools": "^1.0.0",
-    "dotenv": "^17.2.3"
-  },
-  "devDependencies": {
-    "@types/dotenv": "^6.1.1"
-  }
-}
