@@ -21,8 +21,7 @@ export const Sidebar = ({ onItemClick, activeItem }: SidebarProps) => {
   
 
   return (
-    <div className='flex flex-col justify-between h-screen w-64'>
-      <div className="flex flex-col  bg-white border-r border-gray-200">
+    <div className='fixed left-0 top-0 z-50 flex flex-col h-screen w-64 bg-white border-r border-gray-200'>
       <Logo />
       <div className="flex-1 py-4">
         <nav className="space-y-1">
@@ -37,10 +36,9 @@ export const Sidebar = ({ onItemClick, activeItem }: SidebarProps) => {
           ))}
         </nav>
       </div>
-    </div>
-    <div className="p-4">
-      <LogoutButton />
-    </div>
+      <div className="p-4">
+        <LogoutButton />
+      </div>
     </div>
   );
 };

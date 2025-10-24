@@ -150,65 +150,67 @@ export const Dashboard = () => {
     <div className="flex min-h-screen">
       <Sidebar onItemClick={handleSidebarItemClick} activeItem={selectedType} />
       
-      {/* Main Content Area */}
-      <div className="flex-1 p-4 bg-gray-100">
-        <div className="flex justify-between items-center">
-          <div className="font-bold text-2xl ml-2 hidden md:block">
-            {selectedType}
-          </div>
-          
-          <div className="flex justify-end">
-            <div className="p-4">
-              <Button
-                variant="secondary"
-                startIcon={<ShareIcon size="md" />}
-                size="md"
-                className="sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm" 
-                label="Share Brain"
-                fullWidth
-                onClick={handleShareBrain}
-              />
+      {/* Main Content Area - with left margin to account for fixed sidebar */}
+      <div className="flex-1 ml-64 min-h-screen overflow-y-auto bg-gray-100">
+        <div className="p-4">
+          <div className="flex justify-between items-center">
+            <div className="font-bold text-2xl ml-2 hidden md:block">
+              {selectedType}
             </div>
-            <div className="p-4">
-              <Button
-                variant="default"
-                startIcon={<PlusIcon size="md" />}
-                size="md"
-                className="sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm" 
-                label="Add Content"
-                fullWidth
-                onClick={() => setIsContentModalOpen(true)}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Content Cards Section */}
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <p className="text-gray-500">Loading contents...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredContents.length === 0 ? (
-              <div className="col-span-full text-center py-10">
-                <p className="text-gray-500">No {selectedType !== 'All Notes' ? selectedType : ''} content found. Add some content to get started!</p>
-              </div>
-            ) : (
-              filteredContents.map((content: any, index: number) => (
-                <ContentCard
-                  key={content.id || index}
-                  title={content.title}
-                  content={content.content}
-                  type={content.type}
-                  dateAdded={content.dateAdded}
-                  onDelete={() => handleDelete(content.id)}
-                  onShare={() => handleShareContent(content.id, content.title)}
+            
+            <div className="flex justify-end">
+              <div className="p-4">
+                <Button
+                  variant="secondary"
+                  startIcon={<ShareIcon size="md" />}
+                  size="md"
+                  className="sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm" 
+                  label="Share Brain"
+                  fullWidth
+                  onClick={handleShareBrain}
                 />
-              ))
-            )}
+              </div>
+              <div className="p-4">
+                <Button
+                  variant="default"
+                  startIcon={<PlusIcon size="md" />}
+                  size="md"
+                  className="sm:px-4 sm:py-2 sm:text-xs md:px-6 md:py-3 md:text-sm" 
+                  label="Add Content"
+                  fullWidth
+                  onClick={() => setIsContentModalOpen(true)}
+                />
+              </div>
+            </div>
           </div>
-        )}
+
+          {/* Content Cards Section */}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <p className="text-gray-500">Loading contents...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredContents.length === 0 ? (
+                <div className="col-span-full text-center py-10">
+                  <p className="text-gray-500">No {selectedType !== 'All Notes' ? selectedType : ''} content found. Add some content to get started!</p>
+                </div>
+              ) : (
+                filteredContents.map((content: any, index: number) => (
+                  <ContentCard
+                    key={content.id || index}
+                    title={content.title}
+                    content={content.content}
+                    type={content.type}
+                    dateAdded={content.dateAdded}
+                    onDelete={() => handleDelete(content.id)}
+                    onShare={() => handleShareContent(content.id, content.title)}
+                  />
+                ))
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       <ContentModal
