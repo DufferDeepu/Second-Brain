@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Base URL for all API requests
-const API_URL = 'http://localhost:3000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Simple type definitions
 interface Content {
