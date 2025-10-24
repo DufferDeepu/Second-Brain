@@ -3,6 +3,7 @@ import axios from 'axios';
 
 // Base URL for all API requests
 const API_URL = import.meta.env.VITE_API_URL;
+fetch(`${API_URL}/api/v1`);
 
 // Simple type definitions
 interface Content {
