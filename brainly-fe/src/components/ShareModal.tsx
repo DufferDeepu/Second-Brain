@@ -1,9 +1,14 @@
-// ShareModal.tsx
+// src/components/ShareModal.tsx
+
 import { useState, useEffect } from 'react';
 import { X, Link, Copy, Check } from 'lucide-react';
 import { Button } from './Button';
 import { useMutation } from 'react-query';
-import { sharingAPI } from '../api';
+// --- FIX 1: Import ShareResponse from your api file ---
+import { sharingAPI, type ShareResponse } from '../api';
+
+// --- FIX 2: Remove the local interface definition ---
+// interface ShareResponse { ... } // <-- This has been DELETED
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -12,42 +17,46 @@ interface ShareModalProps {
   contentTitle?: string;
 }
 
-export const ShareModal = ({ 
-  isOpen, 
-  onClose, 
-  contentId, 
-  contentTitle 
+export const ShareModal = ({
+  isOpen,
+  onClose,
+  contentId,
+  contentTitle,
 }: ShareModalProps) => {
   const [copied, setCopied] = useState(false);
   const [shareLink, setShareLink] = useState('');
-  
-  // Determine if we're sharing a specific content or the whole brain
-  const isContentShare = Boolean(contentId);
-  const title = isContentShare 
-    ? `Share "${contentTitle || 'Content'}"` 
-    : "Share Your Brain";
-  
-  const description = isContentShare
-    ? "Generate a shareable link to give others access to this content."
-    : "Generate a shareable link to give others access to your entire brain.";
 
-  const shareMutation = useMutation(
+  const isContentShare = Boolean(contentId);
+  const title = isContentShare
+    ? `Share "${contentTitle || 'Content'}"`
+    : 'Share Your Brain';
+
+  const description = isContentShare
+    ? 'Generate a shareable link to give others access to this content.'
+    : 'Generate a shareable link to give others access to your entire brain.';
+
+  // This line is now correct, because 'ShareResponse' refers to the imported type
+  const shareMutation = useMutation<ShareResponse, Error, boolean>(
     (share: boolean) => {
-      return isContentShare 
-        ? sharingAPI.shareContent() // Removed contentId parameter
-        : sharingAPI.shareBrain(share);
+      if (isContentShare) {
+        return sharingAPI.shareContent(contentId!);
+      }
+      return sharingAPI.shareBrain(share);
     },
     {
       onSuccess: (data) => {
+        // This check is still perfect, as it handles 'hash' being string | undefined
         if (data.hash) {
           const fullShareLink = `${window.location.origin}/brain/share/${data.hash}`;
           setShareLink(fullShareLink);
         }
       },
+      onError: (error) => {
+        console.error('Failed to generate share link:', error.message);
+      },
     }
   );
 
-  // Reset state when modal opens or content changes
   useEffect(() => {
     if (isOpen) {
       setCopied(false);
@@ -66,7 +75,6 @@ export const ShareModal = ({
   };
 
   const handleDisableSharing = () => {
-    // Only for brain sharing, not individual content
     if (!isContentShare) {
       shareMutation.mutate(false);
       setShareLink('');
@@ -97,7 +105,9 @@ export const ShareModal = ({
             <Button
               variant="default"
               size="md"
-              label={shareMutation.isLoading ? "Generating..." : "Generate Share Link"}
+              label={
+                shareMutation.isLoading ? 'Generating...' : 'Generate Share Link'
+              }
               onClick={handleGenerateLink}
               disabled={shareMutation.isLoading}
               fullWidth
@@ -123,11 +133,11 @@ export const ShareModal = ({
                   )}
                 </button>
               </div>
-              
-              <div className="flex justify-between">
+
+              <div className="flex justify-end space-x-2">
                 {!isContentShare && (
                   <Button
-                    variant="secondary"
+                    variant="destructive"
                     size="md"
                     label="Disable Sharing"
                     onClick={handleDisableSharing}
@@ -138,7 +148,6 @@ export const ShareModal = ({
                   size="md"
                   label="Close"
                   onClick={onClose}
-                  fullWidth={isContentShare}
                 />
               </div>
             </div>

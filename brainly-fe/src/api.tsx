@@ -1,19 +1,18 @@
 // api/index.ts
 import axios from 'axios';
 
-// Base URL for all API requests from your .env file
-// This should be: VITE_API_URL=https://brainly-backend-e9y7.onrender.com
+// Base URL for all API requests
 const API_URL = import.meta.env.VITE_API_URL;
 
-// --- Type Definitions ---
+// Simple type definitions
 interface Content {
   _id: string;
   title: string;
   link: string;
-  type: 'youtube' | 'twitter' | 'text' | 'document' | 'link';
+  type: 'youtube' | 'twitter' | 'text' | 'document' | 'link'; // Added document and link types
   userId: string;
   tags: string[];
-  createdAt?: string;
+  createdAt?: string; // Added missing property
 }
 
 interface ContentInput {
@@ -27,72 +26,78 @@ interface APIResponse<T> {
   data?: T;
 }
 
-interface ShareResponse {
+export interface ShareResponse {
   hash?: string;
   message?: string;
 }
 
-// --- Axios Configuration ---
-
-// Create an axios instance with the base URL.
+// Create axios instance
 const api = axios.create({
   baseURL: API_URL,
 });
 
-// Use an interceptor to automatically add the auth token to every request.
+// Add auth token to requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    // Add correct type to config.headers
+    if (config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
   return config;
 });
 
-// --- API Functions ---
-
 // Authentication API functions
 export const authAPI = {
+  // Sign in function
   signin: async (username: string, password: string): Promise<string> => {
-    // Corrected path to match your backend
-    const response = await api.post<{ token: string }>('/api/v1/signin', { username, password });
+    const response = await api.post<{ token: string }>('/signin', { username, password });
     const { token } = response.data;
     localStorage.setItem('token', token);
     return token;
   },
   
+  // Sign up function
   signup: async (username: string, password: string): Promise<APIResponse<void>> => {
-    // Corrected path to match your backend
-    const response = await api.post<APIResponse<void>>('/api/v1/signup', { username, password });
+    const response = await api.post<APIResponse<void>>('/signup', { username, password });
     return response.data;
   },
 };
 
 // Content API functions
 export const contentAPI = {
-  getContents: async (): Promise<Content[]> => {
-    // Corrected path to match your backend
-    const response = await api.get<{ content: Content[] }>('/api/v1/content');
+  // Get content list
+  getContents: async (): Promise<Content[]> => { // Removed unused type parameter
+    const response = await api.get<{ content: Content[] }>('/content');
     return response.data.content || [];
   },
   
+  // Add new content
   addContent: async (content: ContentInput): Promise<APIResponse<void>> => {
-    // Corrected path to match your backend
-    const response = await api.post<APIResponse<void>>('/api/v1/content', content);
+    const response = await api.post<APIResponse<void>>('/content', content);
     return response.data;
   },
   
+  // Delete content
   deleteContent: async (contentId: string): Promise<APIResponse<void>> => {
-    // Corrected path to match your backend
-    const response = await api.post<APIResponse<void>>('/api/v1/delete', { contentId });
+    const response = await api.post<APIResponse<void>>('/delete', { contentId });
     return response.data;
   },
 };
 
 // Sharing API functions
 export const sharingAPI = {
-  updateBrainSharing: async (share: boolean): Promise<ShareResponse> => {
-    // Corrected path to match your backend
-    const response = await api.post<ShareResponse>('/api/v1/brain/share', { share });
+  // Share brain function
+  shareBrain: async (share: boolean): Promise<ShareResponse> => {
+    const response = await api.post<ShareResponse>('/brain/share', { share });
     return response.data;
   },
+  
+  // Share content function
+  shareContent: async (p0: string): Promise<ShareResponse> => { // Removed unused contentId parameter
+    // Generate a shareable link for individual content
+    const brainShareResponse = await api.post<ShareResponse>('/brain/share', { share: true });
+    return brainShareResponse.data;
+  }
 };
